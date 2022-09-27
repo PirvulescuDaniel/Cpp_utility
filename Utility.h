@@ -9,7 +9,7 @@ namespace Utility
 		srand(static_cast<unsigned int>(time(NULL)));
 
 		std::array<char, 16> characters = { '0','1','2','3','4','5','6','7','8','9',
-											'A','B','C','D','E','F' };
+						    'A','B','C','D','E','F' };
 
 		std::string guid;
 
