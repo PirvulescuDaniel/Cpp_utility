@@ -8,11 +8,10 @@ namespace Utility
 	{
 		srand(static_cast<unsigned int>(time(NULL)));
 
-		std::array<char, 16> characters = { '0','1','2','3','4','5','6','7','8','9',
-						    'A','B','C','D','E','F' };
-
+		const std::string characters = "0123456789ABCDEF";
 		std::string guid;
 
+		guid += '{';
 		for (auto i = 0; i < 36; i++)
 		{
 			if (i == 8 || i == 13 || i == 18 || i == 23) {
@@ -23,11 +22,57 @@ namespace Utility
 			const auto index = rand() % characters.size();
 			guid += characters.at(index);
 		}
-
 		guid += '}';
-		guid.insert(guid.begin(), '{');
 
 		return guid;
+	}
+
+	std::vector<std::string> SplitByDelimiters(const std::string& aString, std::vector<std::string> aDelimiters)
+	{
+		std::sort(aDelimiters.begin(), aDelimiters.end(),
+			[](const std::string& first, const std::string& second) {
+				return first.size() > second.size();
+			}
+		);
+
+		std::vector<std::string> output;
+		std::string stringCopy(aString);
+
+		size_t index{};
+		size_t delimSize{};
+
+		while (true)
+		{
+			size_t indexMin = std::numeric_limits<size_t>::max();
+
+			for (const auto& delimitator : aDelimiters)
+			{
+				index = stringCopy.find(delimitator);
+				if (index != std::string::npos && index < indexMin)
+				{
+					indexMin = index;
+					delimSize = delimitator.size();
+				}
+			}
+
+			if (indexMin == std::numeric_limits<size_t>::max())
+			{
+				output.push_back(stringCopy);
+				break;
+			}
+
+			output.push_back(stringCopy.substr(0, indexMin));
+			stringCopy = stringCopy.substr(indexMin + delimSize, stringCopy.size());
+		}
+
+		auto last = std::remove_if(output.begin(), output.end(),
+			[](const std::string& obj) {
+				return obj.size() == 0;
+			}
+		);
+
+		output = std::vector<std::string>(output.begin(), last);
+		return output;
 	}
 
 
