@@ -75,5 +75,21 @@ namespace Utility
 		return output;
 	}
 
+	template <typename MeasureUnit = std::chrono::milliseconds , typename Clock = std::chrono::high_resolution_clock>
+	struct perf_timer
+	{
 
+		template <typename F, typename... Args>
+		static MeasureUnit countDuration(F&& f, Args... args)
+		{
+
+			const auto start = Clock::now();
+
+			std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+
+			const auto end = Clock::now();
+			return std::chrono::duration_cast<MeasureUnit>(end - start);
+		}
+
+	};
 }
